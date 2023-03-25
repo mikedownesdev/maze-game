@@ -1,4 +1,13 @@
-<h1 class="text-3xl font-bold underline">Hello world!</h1>
+<script>
+	import Square from "../components/Square.svelte";
+	import Maze from "../components/Maze.svelte";
+</script>
+
+
+<main>
+	<Maze />
+</main>
+
 
 <style lang="postcss">
 	:global(html) {
