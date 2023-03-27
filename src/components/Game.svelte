@@ -4,6 +4,7 @@
 	import Timer from './Timer.svelte';
 	import StepCounter from './StepCounter.svelte';
 	import Score from './Score.svelte';
+	import { generateTestMaze } from '../lib';
 
 	let size = 10;
 	let time = 0;
@@ -14,6 +15,8 @@
 	const nextMaze = () => {
 		// You can define the logic to generate a new maze here
 	};
+
+	const testMaze = generateTestMaze(10);
 
 	onMount(() => {
 		const timerInterval = setInterval(() => {
@@ -40,7 +43,7 @@
 		<StepCounter {steps} />
 		<Score {score} />
 	</div>
-	<Maze {size} on:squareReached={handleSquareReached} />
+	<Maze {...testMaze} on:squareReached={handleSquareReached} />
 </div>
 
 {#if gameCompleted}

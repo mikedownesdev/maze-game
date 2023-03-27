@@ -5,3 +5,8 @@ type SquareData = {
     isFinish: boolean;
     portalNumber: number | null;
 }
+
+type MazeData = {
+    squares: SquareData[][];
+    size: number;
+}
