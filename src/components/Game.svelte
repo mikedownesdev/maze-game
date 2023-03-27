@@ -29,16 +29,19 @@
 	});
 
 	const handleSquareReached = (event: CustomEvent) => {
-        steps = steps + 1;
-        const squareData = event.detail;
+		steps = steps + 1;
+		const squareData = event.detail;
 		if (squareData.isFinish) {
 			gameCompleted = true;
 		}
 	};
 </script>
 
-<div class="game-container">
-	<div class="game-info">
+<div id="game-container" class="container flex flex-col items-center">
+	<div
+		class="game-info
+		flex justify-evenly w-full mb-4
+	">
 		<Timer {time} />
 		<StepCounter {steps} />
 		<Score {score} />
@@ -57,19 +60,6 @@
 {/if}
 
 <style>
-	.game-container {
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-	}
-
-	.game-info {
-		display: flex;
-		justify-content: space-around;
-		width: 100%;
-		margin-bottom: 16px;
-	}
-
 	.complete-popup {
 		position: fixed;
 		top: 50%;

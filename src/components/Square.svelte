@@ -8,22 +8,26 @@
 <div
 	class="
         square
-        w-4 h-4 border border-gray-500
+        w-8 h-8 border border-gray-200
+		rounded-sm
         {isWall ? 'bg-black' : ''}
-        {isOccupied ? 'bg-blue-500' : ''}
+        {isOccupied ? 'bg-white' : ''}
 		{isFinish? 'bg-red-500' : ''}
     "
 >
 	{#if number !== null}
-		<span class="portal text-xs">{number}</span>
+		<div class="bg-purple-600 p-1 rounded-lg">
+			<span class="
+				portal text-xs"
+			>
+				{number}
+			</span>
+		</div>
 	{/if}
 </div>
 
 <style>
 	.square {
-		width: 32px;
-		height: 32px;
-		border: 1px solid gray;
 		display: flex;
 		justify-content: center;
 		align-items: center;
@@ -32,6 +36,6 @@
 	.portal {
 		font-size: 12px;
 		font-weight: bold;
-		color: blue;
+		color: white;
 	}
 </style>
