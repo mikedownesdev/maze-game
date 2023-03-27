@@ -16,7 +16,7 @@
 		// You can define the logic to generate a new maze here
 	};
 
-	const testMaze = generateTestMaze(10);
+	const testMaze = generateTestMaze(size);
 
 	onMount(() => {
 		const timerInterval = setInterval(() => {
@@ -37,36 +37,38 @@
 	};
 </script>
 
-<div id="game-container" class="container flex flex-col items-center">
+<div id="game-container" class="mt-8">
 	<div
 		class="game-info
-		flex justify-evenly w-full mb-4
+		flex justify-evenly w-full mb-8
 	">
 		<Timer {time} />
 		<StepCounter {steps} />
 		<Score {score} />
 	</div>
-	<Maze {...testMaze} on:squareReached={handleSquareReached} />
-</div>
-
-{#if gameCompleted}
-	<div class="complete-popup">
+	<div>
+		<Maze {...testMaze} on:squareReached={handleSquareReached} />
+	</div>
+	{#if gameCompleted}
+	<div class="complete-popup shadow-xl fixed rounded-3xl">
 		<h2>Complete!</h2>
 		<p>Time: {time} seconds</p>
 		<p>Steps: {steps}</p>
 		<p>Score: {score}</p>
 		<button on:click={nextMaze}>Next Maze</button>
 	</div>
-{/if}
+	{/if}
+</div>
+
 
 <style>
 	.complete-popup {
-		position: fixed;
+		width: 400px;
+		height: 400px;
 		top: 50%;
 		left: 50%;
 		transform: translate(-50%, -50%);
 		background-color: white;
-		border: 1px solid black;
 		padding: 16px;
 		text-align: center;
 	}

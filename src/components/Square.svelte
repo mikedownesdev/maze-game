@@ -8,11 +8,11 @@
 <div
 	class="
         square
-        w-8 h-8 border border-gray-200
+        w-12 h-12 border-2 border-gray-200
 		rounded-sm
         {isWall ? 'bg-black' : ''}
         {isOccupied ? 'bg-white' : ''}
-		{isFinish? 'bg-red-500' : ''}
+		{isFinish? 'bg-green-500' : ''}
     "
 >
 	{#if number !== null}
