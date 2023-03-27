@@ -1,14 +1,8 @@
 <script lang="ts">
 	export let isWall: boolean;
 	export let isOccupied: boolean;
+	export let isFinish: boolean;
 	export let number: number | null;
-
-	/*
-        {#if isWall}bg-black{/if}
-      {#if isStart}bg-green-500{/if}
-      {#if isEnd}bg-red-500{/if}
-      {#if isCurrent}bg-blue-500{/if}
-    */
 </script>
 
 <div
@@ -17,6 +11,7 @@
         w-4 h-4 border border-gray-500
         {isWall ? 'bg-black' : ''}
         {isOccupied ? 'bg-blue-500' : ''}
+		{isFinish? 'bg-red-500' : ''}
     "
 >
 	{#if number !== null}

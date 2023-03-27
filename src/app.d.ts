@@ -6,14 +6,7 @@ declare global {
 		// interface Locals {}
 		// interface PageData {}
 		// interface Platform {}
-		type Square = {
-			isSquare: boolean;
-			isWall: boolean;
-			isOccupied: boolean;
-			isStart: boolean;
-			isFinish: boolean;
-		}
 	}
 }
 
-export {};
+export { };
