@@ -16,18 +16,27 @@
 
 	<slot />
 
-	<footer class="bg-black justify-center bottom-0 mt-8 bg-opacity-25 w-full">
-		<div class="mx-auto p-8">
-			<div>
-				<p>
-					Mazer is a simple game where you navigate a series of squares and portals to reach the end
-					of a maze
+	<footer class="bg-black mt-8 bg-opacity-25">
+		<div class="container mx-auto flex justify-center">
+			<div class="p-4 w-1/3">
+				<div>
+					<p>
+						Mazer is a simple game where you navigate a series of squares and portals to reach the end
+						of a maze
+					</p>
+					<p>Inspired by crosswords and Tomorrow, Tomorrow, and Tomorrow, and planes</p>
+				</div>
+				<p class="text-sm text-white">
+					
 				</p>
-				<p>Inspired by crosswords and Tomorrow, Tomorrow, and Tomorrow, and planes</p>
 			</div>
-			<p class="text-sm text-white">
-				<a href="https://mikedownes.dev" class="underline">About</a>
-			</p>
+			<div class="p-4">
+				<ul>
+					<li><a href="https://mikedownes.dev" class="underline">About</a></li>
+					<li><a href="https://mikedownes.dev" class="underline">Donate</a></li>
+					<li><a href="https://mikedownes.dev" class="underline">Inquire</a></li>
+				</ul>
+			</div>
 		</div>
 	</footer>
 </div>
