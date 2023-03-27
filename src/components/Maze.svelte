@@ -40,7 +40,7 @@
 		squares[row][col].isOccupied = true;
 		currentOccupiedSquare = { row, col };
         
-        dispatch('squareReached', squares[row][col]);
+        dispatch('stepTaken', squares[row][col]);
 	}
 
 	// Handle keyboard input to move the player
@@ -75,9 +75,9 @@
 	}
 </script>
 
-<div class="flex flex-col items-center space-y-1">
+<div class="flex flex-col items-center space-y-0.5">
 	{#each squares as rowValues}
-		<div class="flex space-x-1">
+		<div class="flex space-x-0.5">
 			{#each rowValues as squareData}
 				<Square
 					isOccupied={squareData.isOccupied}

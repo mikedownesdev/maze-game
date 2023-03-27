@@ -10,6 +10,7 @@
 	let time = 0;
 	let steps = 0;
 	$: score = 1000 - steps - time;
+	let mazeLoaded = false;
 	let gameCompleted = false;
 
 	const nextMaze = () => {
@@ -28,7 +29,7 @@
 		}, 1000);
 	});
 
-	const handleSquareReached = (event: CustomEvent) => {
+	const handleStepTaken = (event: CustomEvent) => {
 		steps = steps + 1;
 		const squareData = event.detail;
 		if (squareData.isFinish) {
@@ -40,14 +41,14 @@
 <div id="game-container" class="mt-8">
 	<div
 		class="game-info
-		flex justify-evenly w-full mb-8
+		flex justify-evenly w-full mb-8 items-
 	">
 		<Timer {time} />
 		<StepCounter {steps} />
 		<Score {score} />
 	</div>
 	<div>
-		<Maze {...testMaze} on:squareReached={handleSquareReached} />
+		<Maze {...testMaze} on:stepTaken={handleStepTaken} />
 	</div>
 	{#if gameCompleted}
 	<div class="complete-popup shadow-xl fixed rounded-3xl">
