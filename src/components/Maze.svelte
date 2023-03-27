@@ -1,5 +1,8 @@
 <script lang="ts">
 	import Square from './Square.svelte';
+    import { createEventDispatcher } from 'svelte';
+    
+    const dispatch = createEventDispatcher();
 
 	// Maze size
 	export let size: number;
@@ -97,6 +100,8 @@
 		maze[currentOccupiedSquare.row][currentOccupiedSquare.col].isOccupied = false;
 		maze[row][col].isOccupied = true;
 		currentOccupiedSquare = { row, col };
+        
+        dispatch('squareReached', maze[row][col]);
 	}
 
 	// Handle keyboard input to move the player

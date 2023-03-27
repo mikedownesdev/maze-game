@@ -1,11 +1,12 @@
 <script>
 	import Square from "../components/Square.svelte";
 	import Maze from "../components/Maze.svelte";
+	import Game from "../components/Game.svelte";
 </script>
 
 
 <main>
-	<Maze size={10} />
+	<Game />
 </main>
 
 
