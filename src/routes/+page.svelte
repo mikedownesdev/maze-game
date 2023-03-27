@@ -5,7 +5,7 @@
 
 
 <main>
-	<Maze />
+	<Maze size={10} />
 </main>
 
 
