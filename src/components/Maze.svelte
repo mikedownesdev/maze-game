@@ -83,6 +83,7 @@
 					isOccupied={squareData.isOccupied}
 					isWall={squareData.isWall}
                     isFinish={squareData.isFinish}
+					isPortal={squareData.portalNumber !== null}
 					number={squareData.portalNumber}
 				/>
 			{/each}
