@@ -5,6 +5,7 @@
 	import StepCounter from './StepCounter.svelte';
 	import Score from './Score.svelte';
 	import { generateTestMaze } from '../lib';
+	import { Square } from 'svelte-loading-spinners';
 
 	let size = 10;
 	let time = 0;
@@ -19,14 +20,22 @@
 
 	const testMaze = generateTestMaze(size);
 
+	const getMaze = async () => {
+		return await new Promise((resolve) => setTimeout(resolve, 2000));
+	};
+
 	onMount(() => {
-		const timerInterval = setInterval(() => {
+		const res = getMaze();
+		res.then(() => {
+			mazeLoaded = true;
+			const timerInterval = setInterval(() => {
 			if (!gameCompleted) {
 				time++;
 			} else {
 				clearInterval(timerInterval);
 			}
 		}, 1000);
+		});
 	});
 
 	const handleStepTaken = (event: CustomEvent) => {
@@ -48,8 +57,12 @@
 		<Score {score} />
 	</div>
 	<div>
+		{#if mazeLoaded}
 		<Maze {...testMaze} on:stepTaken={handleStepTaken} />
-	</div>
+		{:else}
+		<Square size="60" color="#FFFFFF" unit="px" duration="2s" />
+		{/if}
+	</div>	
 	{#if gameCompleted}
 	<div class="complete-popup shadow-xl fixed rounded-3xl">
 		<h2>Complete!</h2>
