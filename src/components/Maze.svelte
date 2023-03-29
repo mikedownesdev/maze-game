@@ -1,7 +1,7 @@
 <script lang="ts">
 	import Square from './Square.svelte';
     import { createEventDispatcher } from 'svelte';
-	import { generateTestMaze } from '../lib';
+	import { fade } from 'svelte/transition';
     
     const dispatch = createEventDispatcher();
 
@@ -9,7 +9,7 @@
 	export let squares: SquareData[][]
 	export let size: number;
 
-	let currentOccupiedSquare = { row: 0, col: 0 };
+	let currentlyOccupiedSquare = { row: 0, col: 0 };
 
 	function updatePlayerPosition(
 		{ row, col }: { row: number; col: number },
@@ -36,9 +36,9 @@
 			return;
 		}
 
-		squares[currentOccupiedSquare.row][currentOccupiedSquare.col].isOccupied = false;
+		squares[currentlyOccupiedSquare.row][currentlyOccupiedSquare.col].isOccupied = false;
 		squares[row][col].isOccupied = true;
-		currentOccupiedSquare = { row, col };
+		currentlyOccupiedSquare = { row, col };
         
         dispatch('stepTaken', squares[row][col]);
 	}
@@ -52,21 +52,23 @@
 
 		switch (event.key) {
 			case 'ArrowUp':
-				if (currentOccupiedSquare.row === 0) return;
-				nextSquareIndicies = { row: currentOccupiedSquare.row - 1, col: currentOccupiedSquare.col };
+				if (currentlyOccupiedSquare.row === 0) return;
+				nextSquareIndicies = { row: currentlyOccupiedSquare.row - 1, col: currentlyOccupiedSquare.col };
 				break;
 			case 'ArrowDown':
-				if (currentOccupiedSquare.row === size - 1) return;
-				nextSquareIndicies = { row: currentOccupiedSquare.row + 1, col: currentOccupiedSquare.col };
+				if (currentlyOccupiedSquare.row === size - 1) return;
+				nextSquareIndicies = { row: currentlyOccupiedSquare.row + 1, col: currentlyOccupiedSquare.col };
 				break;
 			case 'ArrowLeft':
-				if (currentOccupiedSquare.col === 0) return;
-				nextSquareIndicies = { row: currentOccupiedSquare.row, col: currentOccupiedSquare.col - 1 };
+				if (currentlyOccupiedSquare.col === 0) return;
+				nextSquareIndicies = { row: currentlyOccupiedSquare.row, col: currentlyOccupiedSquare.col - 1 };
 				break;
 			case 'ArrowRight':
-				if (currentOccupiedSquare.col === size - 1) return;
-				nextSquareIndicies = { row: currentOccupiedSquare.row, col: currentOccupiedSquare.col + 1 };
+				if (currentlyOccupiedSquare.col === size - 1) return;
+				nextSquareIndicies = { row: currentlyOccupiedSquare.row, col: currentlyOccupiedSquare.col + 1 };
 				break;
+			default:
+				return;
 		}
 
 		if (squares[nextSquareIndicies.row][nextSquareIndicies.col].isWall) return;

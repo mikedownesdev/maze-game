@@ -6,6 +6,7 @@
 	import Score from './Score.svelte';
 	import { generateTestMaze } from '../lib';
 	import { Square } from 'svelte-loading-spinners';
+	import { fade } from 'svelte/transition';
 
 	let size = 10;
 	let time = 0;
@@ -18,10 +19,12 @@
 		// You can define the logic to generate a new maze here
 	};
 
+	
+
 	const testMaze = generateTestMaze(size);
 
 	const getMaze = async () => {
-		return await new Promise((resolve) => setTimeout(resolve, 2000));
+		return await new Promise((resolve) => setTimeout(resolve, 1000));
 	};
 
 	onMount(() => {
@@ -64,7 +67,7 @@
 		{/if}
 	</div>	
 	{#if gameCompleted}
-	<div class="complete-popup shadow-xl fixed rounded-3xl">
+	<div transition:fade class="complete-popup shadow-xl fixed rounded-3xl">
 		<h2>Complete!</h2>
 		<p>Time: {time} seconds</p>
 		<p>Steps: {steps}</p>
