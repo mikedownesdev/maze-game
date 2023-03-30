@@ -3,7 +3,7 @@ type SquareData = {
     isOccupied: boolean;
     isStart: boolean;
     isFinish: boolean;
-    portalNumber: number | null;
+    portalNumber: number | null | undefined;
 }
 
 type MazeData = {

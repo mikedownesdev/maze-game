@@ -60,7 +60,34 @@ export const generateTestMaze = (size: number): MazeData => {
     squares[1][4].isWall = true;
 
     return {
+        id: "0",
         squares: squares,
         size: size
     }
 };
+
+export const generateNewMaze = (): MazeData => {
+    const size = 10;
+
+    const createMazeRow = (rowLength: number): SquareData[] => {
+		return Array.from(Array(rowLength), () => {
+			return {
+				isWall: false,
+				isOccupied: false,
+				isStart: false,
+				isFinish: false,
+				portalNumber: null
+			};
+		});
+	};
+
+    const squares = Array.from(Array(size), () => createMazeRow(size));
+    squares[0][0].isStart = true;
+    squares[9][9].isFinish = true;
+
+    return {
+        id: "0",
+        squares: squares,
+        size: size
+    }
+}

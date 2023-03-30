@@ -4,11 +4,13 @@
 	import Timer from './Timer.svelte';
 	import StepCounter from './StepCounter.svelte';
 	import Score from './Score.svelte';
-	import { Square } from 'svelte-loading-spinners';
+	import MazeConfigPanel from './MazeConfigPanel.svelte';
+	import { Square as LoadingSpinner } from 'svelte-loading-spinners';
 	import { fade } from 'svelte/transition';
 	import { getMaze } from '../../firebase';
+	import { generateNewMaze } from '../../lib';
 
-	let size = 10;
+	let mode: 'play' | 'edit' = 'play';
 	let time = 0;
 	let steps = 0;
 	$: score = 1000 - steps - time;
@@ -49,19 +51,26 @@
 		if (startSquare && finishSquare) {
 			maze.squares[startSquare.row][startSquare.col].isOccupied = true;
 			maze.squares[finishSquare.row][finishSquare.col].isFinish = true;
+		} else {
+			console.log('No start or finish square found');
 		}
-		else {
-			console.log("No start or finish square found")
-		}
-		
 	};
 
+	const loadNewMaze = () => {
+		maze = generateNewMaze();
+		mazeLoaded = true;
+		mode = 'edit';
+		initializeMaze(maze);
+	}
+
 	onMount(() => {
-		const mazePromise = getMaze("1");
+		const mazePromise = getMaze('1');
 		mazePromise.then((mazeDocument) => {
-			if(mazeDocument) {
-				maze = {...mazeDocument, squares: Object.values(mazeDocument.squares)}
+			if (mazeDocument) {
+				maze = { ...mazeDocument, squares: Object.values(mazeDocument.squares) };
 				mazeLoaded = true;
+				mode = 'play';
+
 				initializeMaze(maze);
 				const timerInterval = setInterval(() => {
 					if (!gameCompleted) {
@@ -83,6 +92,8 @@
 	};
 </script>
 
+<button on:click={() => loadNewMaze()}>New maze</button>
+
 <div id="game-container" class="mt-8">
 	<div
 		class="game-info
@@ -95,9 +106,15 @@
 	</div>
 	<div>
 		{#if maze && mazeLoaded}
-			<Maze {...maze} on:stepTaken={handleStepTaken} />
+			<Maze bind:squares={maze.squares} mode={mode} on:stepTaken={handleStepTaken} />
 		{:else}
-			<Square size="60" color="#FFFFFF" unit="px" duration="2s" />
+			<LoadingSpinner size="60" color="#FFFFFF" unit="px" duration="2s" />
+		{/if}
+	</div>
+	<div>
+		<button on:click={() => (mode = mode == 'play' ? 'edit' : 'play')}>{mode}</button>
+		{#if mode === 'edit' && maze}
+			<MazeConfigPanel mazeData={maze} size={maze.size}/>
 		{/if}
 	</div>
 	{#if gameCompleted}

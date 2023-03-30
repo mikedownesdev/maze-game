@@ -1,9 +1,22 @@
 <script lang="ts">
+	export let isStart: boolean;
 	export let isWall: boolean;
 	export let isOccupied: boolean;
 	export let isFinish: boolean;
 	export let isPortal: boolean;
 	export let number: number | null | undefined;
+	export let mode: 'edit' | 'play';
+
+	function handleClick() {
+		if (isOccupied || isPortal || isFinish || isStart)	return;
+		if (mode === 'edit') {
+			isWall = !isWall;
+		}
+	}
+
+	function handleDoubleClick() {
+		console.log('double click')
+	}
 </script>
 
 <div
@@ -14,6 +27,7 @@
         {isWall ? 'bg-black' : ''}
 		{isFinish? 'bg-green-500' : ''}
     "
+	on:click={handleClick} on:dblclick={handleDoubleClick}
 >
 	<div class="player-indicator absolute">
 		<svg
