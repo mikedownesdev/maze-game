@@ -4,14 +4,15 @@
 	import Timer from './Timer.svelte';
 	import StepCounter from './StepCounter.svelte';
 	import Score from './Score.svelte';
-	import { generateTestMaze } from '../../lib';
 	import { Square } from 'svelte-loading-spinners';
 	import { fade } from 'svelte/transition';
+	import { getMaze } from '../../firebase';
 
 	let size = 10;
 	let time = 0;
 	let steps = 0;
 	$: score = 1000 - steps - time;
+	let maze: MazeData | null = null;
 	let mazeLoaded = false;
 	let gameCompleted = false;
 
@@ -19,25 +20,57 @@
 		// You can define the logic to generate a new maze here
 	};
 
-	
+	//Write a function that will find the start square and return it
+	const findStartSquare = (maze: MazeData) => {
+		for (let r = 0; r < maze.squares.length; r++) {
+			let row = maze.squares[r];
+			for (let c = 0; c < row.length; c++) {
+				if (maze.squares[r][c].isStart) {
+					return { row: r, col: c };
+				}
+			}
+		}
+	};
 
-	const testMaze = generateTestMaze(size);
+	const findFinishSquare = (maze: MazeData) => {
+		for (let r = 0; r < maze.squares.length; r++) {
+			let row = maze.squares[r];
+			for (let c = 0; c < row.length; c++) {
+				if (maze.squares[r][c].isFinish) {
+					return { row: r, col: c };
+				}
+			}
+		}
+	};
 
-	const getMaze = async () => {
-		return await new Promise((resolve) => setTimeout(resolve, 1000));
+	const initializeMaze = (maze: MazeData) => {
+		const startSquare = findStartSquare(maze);
+		const finishSquare = findFinishSquare(maze);
+		if (startSquare && finishSquare) {
+			maze.squares[startSquare.row][startSquare.col].isOccupied = true;
+			maze.squares[finishSquare.row][finishSquare.col].isFinish = true;
+		}
+		else {
+			console.log("No start or finish square found")
+		}
+		
 	};
 
 	onMount(() => {
-		const res = getMaze();
-		res.then(() => {
-			mazeLoaded = true;
-			const timerInterval = setInterval(() => {
-			if (!gameCompleted) {
-				time++;
-			} else {
-				clearInterval(timerInterval);
+		const mazePromise = getMaze("1");
+		mazePromise.then((mazeDocument) => {
+			if(mazeDocument) {
+				maze = {...mazeDocument, squares: Object.values(mazeDocument.squares)}
+				mazeLoaded = true;
+				initializeMaze(maze);
+				const timerInterval = setInterval(() => {
+					if (!gameCompleted) {
+						time++;
+					} else {
+						clearInterval(timerInterval);
+					}
+				}, 1000);
 			}
-		}, 1000);
 		});
 	});
 
@@ -54,29 +87,29 @@
 	<div
 		class="game-info
 		flex justify-evenly w-full mb-8 items-
-	">
+	"
+	>
 		<Timer {time} />
 		<StepCounter {steps} />
 		<Score {score} />
 	</div>
 	<div>
-		{#if mazeLoaded}
-		<Maze {...testMaze} on:stepTaken={handleStepTaken} />
+		{#if maze && mazeLoaded}
+			<Maze {...maze} on:stepTaken={handleStepTaken} />
 		{:else}
-		<Square size="60" color="#FFFFFF" unit="px" duration="2s" />
+			<Square size="60" color="#FFFFFF" unit="px" duration="2s" />
 		{/if}
-	</div>	
-	{#if gameCompleted}
-	<div transition:fade class="complete-popup shadow-xl fixed rounded-3xl">
-		<h2>Complete!</h2>
-		<p>Time: {time} seconds</p>
-		<p>Steps: {steps}</p>
-		<p>Score: {score}</p>
-		<button on:click={nextMaze}>Next Maze</button>
 	</div>
+	{#if gameCompleted}
+		<div transition:fade class="complete-popup shadow-xl fixed rounded-3xl">
+			<h2>Complete!</h2>
+			<p>Time: {time} seconds</p>
+			<p>Steps: {steps}</p>
+			<p>Score: {score}</p>
+			<button on:click={nextMaze}>Next Maze</button>
+		</div>
 	{/if}
 </div>
-
 
 <style>
 	.complete-popup {

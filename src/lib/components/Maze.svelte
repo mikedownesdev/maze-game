@@ -7,7 +7,6 @@
 
 	// Props
 	export let squares: SquareData[][]
-	export let size: number;
 
 	let currentlyOccupiedSquare = { row: 0, col: 0 };
 
@@ -19,16 +18,21 @@
 
 		if (nextSquare.isWall) return;
 
+		console.log('a')
+
 		// If the player lands on a Portal Square and `usePortal` is true, find the next Portal Square in the sequence
-		if (usePortal && nextSquare.portalNumber !== null) {
+		if (usePortal && nextSquare.portalNumber) {
 			let nextPortalNumber = nextSquare.portalNumber + 1;
 			let nextPortalFound = false;
-
-			for (let r = 0; r < size && !nextPortalFound; r++) {
-				for (let c = 0; c < size && !nextPortalFound; c++) {
+			debugger
+			for (let r = 0; r < squares.length && !nextPortalFound; r++) {
+				let row = squares[r];
+				debugger
+				for (let c = 0; c < row.length && !nextPortalFound; c++) {
 					if (squares[r][c].portalNumber === nextPortalNumber) {
 						updatePlayerPosition({ row: r, col: c }, false);
 						nextPortalFound = true;
+						debugger
 					}
 				}
 			}
@@ -39,7 +43,7 @@
 		squares[currentlyOccupiedSquare.row][currentlyOccupiedSquare.col].isOccupied = false;
 		squares[row][col].isOccupied = true;
 		currentlyOccupiedSquare = { row, col };
-        
+
         dispatch('stepTaken', squares[row][col]);
 	}
 
@@ -56,7 +60,7 @@
 				nextSquareIndicies = { row: currentlyOccupiedSquare.row - 1, col: currentlyOccupiedSquare.col };
 				break;
 			case 'ArrowDown':
-				if (currentlyOccupiedSquare.row === size - 1) return;
+				// if (currentlyOccupiedSquare.row === size - 1) return;
 				nextSquareIndicies = { row: currentlyOccupiedSquare.row + 1, col: currentlyOccupiedSquare.col };
 				break;
 			case 'ArrowLeft':
@@ -64,7 +68,7 @@
 				nextSquareIndicies = { row: currentlyOccupiedSquare.row, col: currentlyOccupiedSquare.col - 1 };
 				break;
 			case 'ArrowRight':
-				if (currentlyOccupiedSquare.col === size - 1) return;
+				// if (currentlyOccupiedSquare.col === size - 1) return;
 				nextSquareIndicies = { row: currentlyOccupiedSquare.row, col: currentlyOccupiedSquare.col + 1 };
 				break;
 			default:
@@ -85,7 +89,7 @@
 					isOccupied={squareData.isOccupied}
 					isWall={squareData.isWall}
                     isFinish={squareData.isFinish}
-					isPortal={squareData.portalNumber !== null}
+					isPortal={squareData.portalNumber !== undefined}
 					number={squareData.portalNumber}
 				/>
 			{/each}

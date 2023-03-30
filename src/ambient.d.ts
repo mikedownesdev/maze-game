@@ -7,6 +7,13 @@ type SquareData = {
 }
 
 type MazeData = {
+    id: string;
     squares: SquareData[][];
+    size: number;
+}
+
+type MazeDocument = {
+    id: string;
+    squares: Object;
     size: number;
 }

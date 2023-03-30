@@ -3,7 +3,7 @@
 	export let isOccupied: boolean;
 	export let isFinish: boolean;
 	export let isPortal: boolean;
-	export let number: number | null;
+	export let number: number | null | undefined;
 </script>
 
 <div
@@ -33,7 +33,7 @@
 		</svg>
 	</div>
 
-	{#if number !== null}
+	{#if number}
 		<div class="bg-purple-600 p-1 rounded-lg">
 			<span class="
 				portal text-xs"
