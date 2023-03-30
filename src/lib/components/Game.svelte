@@ -4,7 +4,7 @@
 	import Timer from './Timer.svelte';
 	import StepCounter from './StepCounter.svelte';
 	import Score from './Score.svelte';
-	import { generateTestMaze } from '../lib';
+	import { generateTestMaze } from '../../lib';
 	import { Square } from 'svelte-loading-spinners';
 	import { fade } from 'svelte/transition';
 
