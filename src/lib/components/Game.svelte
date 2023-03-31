@@ -22,23 +22,11 @@
 		// You can define the logic to generate a new maze here
 	};
 
-	//Write a function that will find the start square and return it
-	const findStartSquare = (maze: MazeData) => {
+	const findSquareByCondition = (maze: MazeData, condition: (square: SquareData) => boolean) => {
 		for (let r = 0; r < maze.squares.length; r++) {
 			let row = maze.squares[r];
 			for (let c = 0; c < row.length; c++) {
-				if (maze.squares[r][c].isStart) {
-					return { row: r, col: c };
-				}
-			}
-		}
-	};
-
-	const findFinishSquare = (maze: MazeData) => {
-		for (let r = 0; r < maze.squares.length; r++) {
-			let row = maze.squares[r];
-			for (let c = 0; c < row.length; c++) {
-				if (maze.squares[r][c].isFinish) {
+				if (condition(maze.squares[r][c])) {
 					return { row: r, col: c };
 				}
 			}
@@ -46,8 +34,8 @@
 	};
 
 	const initializeMaze = (maze: MazeData) => {
-		const startSquare = findStartSquare(maze);
-		const finishSquare = findFinishSquare(maze);
+		const startSquare = findSquareByCondition(maze, (square) => square.isStart);
+		const finishSquare = findSquareByCondition(maze, (square) => square.isFinish);
 		if (startSquare && finishSquare) {
 			maze.squares[startSquare.row][startSquare.col].isOccupied = true;
 			maze.squares[finishSquare.row][finishSquare.col].isFinish = true;

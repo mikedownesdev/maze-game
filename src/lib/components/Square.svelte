@@ -8,14 +8,14 @@
 	export let mode: 'edit' | 'play';
 
 	function handleClick() {
-		if (isOccupied || isPortal || isFinish || isStart)	return;
+		if (isOccupied || isPortal || isFinish || isStart) return;
 		if (mode === 'edit') {
 			isWall = !isWall;
 		}
 	}
 
 	function handleDoubleClick() {
-		console.log('double click')
+		console.log('double click');
 	}
 </script>
 
@@ -25,15 +25,22 @@
         w-12 h-12 border-2 border-gray-200
 		rounded-sm
         {isWall ? 'bg-black' : ''}
-		{isFinish? 'bg-green-500' : ''}
+		{isFinish ? 'bg-green-500' : ''}
     "
-	on:click={handleClick} on:dblclick={handleDoubleClick}
+	tabindex="-1"
+	on:click={handleClick}
+	on:dblclick={handleDoubleClick}
+	on:keydown={(event) => {
+		if (event.key === 'Enter') {
+			handleClick();
+		}
+	}}
 >
 	<div class="player-indicator absolute">
 		<svg
 			class="w-20 h-20"
 			fill="none"
-			opacity="{isOccupied? '1' : '0'}"
+			opacity={isOccupied ? '1' : '0'}
 			stroke="#ddd"
 			viewBox="0 0 24 24"
 			xmlns="http://www.w3.org/2000/svg"
@@ -43,13 +50,14 @@
 				stroke-linejoin="round"
 				stroke-width="2"
 				d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-			></path>
+			/>
 		</svg>
 	</div>
 
 	{#if number}
 		<div class="bg-purple-600 p-1 rounded-lg">
-			<span class="
+			<span
+				class="
 				portal text-xs"
 			>
 				{number}
@@ -73,7 +81,7 @@
 
 	.portal .player-indicator svg {
 		transition-property: opacity;
-		transition-duration: .5s;
+		transition-duration: 0.5s;
 		transition-timing-function: linear;
 	}
 </style>

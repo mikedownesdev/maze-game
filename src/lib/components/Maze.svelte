@@ -5,7 +5,7 @@
 	const dispatch = createEventDispatcher();
 
 	// Props
-	export let squares: Square[][];
+	export let squares: SquareData[][];
 	export let mode: 'play' | 'edit';
 	$: numberOfWalls = squares.reduce((totalWalls, row) => {
 		return (
@@ -103,10 +103,11 @@
 		<div class="flex space-x-0.5">
 			{#each rowValues as square}
 				<Square
+					bind:isStart={square.isStart}
 					bind:isOccupied={square.isOccupied}
 					bind:isWall={square.isWall}
 					bind:isFinish={square.isFinish}
-					isPortal={square.portalNumber}
+					isPortal={square.portalNumber ? true : false}
 					bind:number={square.portalNumber}
 					{mode}
 				/>
