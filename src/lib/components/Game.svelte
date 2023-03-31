@@ -52,7 +52,7 @@
 	}
 
 	onMount(() => {
-		const mazePromise = getMaze('1');
+		const mazePromise = getMaze('GjgdlIxwA8lG0rF92Ya8');
 		mazePromise.then((mazeDocument) => {
 			if (mazeDocument) {
 				maze = { ...mazeDocument, squares: Object.values(mazeDocument.squares) };

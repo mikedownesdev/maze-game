@@ -1,4 +1,6 @@
 <script lang="ts">
+    import { submitNewMaze } from "../../firebase";
+
     export let size: number;
     export let mazeData: MazeData;
     $: numberOfWalls = mazeData.squares.reduce((totalWalls, row) => {
@@ -9,6 +11,24 @@
 			}, 0)
 		);
 	}, 0);
+
+    function handleClick() {
+        console.log("clicked")
+        // convert MazeData to a MazeDocument
+        var newObject: {
+            [key: string]: SquareData[]
+        } = {}
+        mazeData.squares.forEach((row: SquareData[], index: number) => {
+            const indexString = index.toString();
+            newObject[indexString] = row;
+        })
+        const mazeDocument: MazeDocument = {
+            squares: newObject,
+            size: mazeData.size,
+        }
+        console.log(mazeDocument)
+        submitNewMaze(mazeDocument)
+    }
 </script>
 
 <div class="bg-slate-200 rounded-md p-4">
@@ -26,7 +46,7 @@
         <input type="checkbox" id="hasFinishSquare" checked={true}/>
     </div>
     <button class="bg-slate-500 text-white p-2 rounded-md" on:click={() => {
-        "persist"
+        handleClick()
     }}>Save</button>
 </div>
 
