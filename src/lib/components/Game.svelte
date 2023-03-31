@@ -8,7 +8,7 @@
 	import { Square as LoadingSpinner } from 'svelte-loading-spinners';
 	import { fade } from 'svelte/transition';
 	import { getMaze } from '../../firebase';
-	import { generateNewMaze } from '../../lib';
+	import { generateNewMaze, findSquareByCondition } from '../../lib';
 
 	let mode: 'play' | 'edit' = 'play';
 	let time = 0;
@@ -22,20 +22,11 @@
 		// You can define the logic to generate a new maze here
 	};
 
-	const findSquareByCondition = (maze: MazeData, condition: (square: SquareData) => boolean) => {
-		for (let r = 0; r < maze.squares.length; r++) {
-			let row = maze.squares[r];
-			for (let c = 0; c < row.length; c++) {
-				if (condition(maze.squares[r][c])) {
-					return { row: r, col: c };
-				}
-			}
-		}
-	};
+	
 
 	const initializeMaze = (maze: MazeData) => {
-		const startSquare = findSquareByCondition(maze, (square) => square.isStart);
-		const finishSquare = findSquareByCondition(maze, (square) => square.isFinish);
+		const startSquare = findSquareByCondition(maze.squares, (square) => square.isStart);
+		const finishSquare = findSquareByCondition(maze.squares, (square) => square.isFinish);
 		if (startSquare && finishSquare) {
 			maze.squares[startSquare.row][startSquare.col].isOccupied = true;
 			maze.squares[finishSquare.row][finishSquare.col].isFinish = true;
@@ -49,7 +40,7 @@
 		mazeLoaded = true;
 		mode = 'edit';
 		initializeMaze(maze);
-	}
+	};
 
 	onMount(() => {
 		const mazePromise = getMaze('GjgdlIxwA8lG0rF92Ya8');
@@ -94,7 +85,7 @@
 	</div>
 	<div>
 		{#if maze && mazeLoaded}
-			<Maze bind:squares={maze.squares} mode={mode} on:stepTaken={handleStepTaken} />
+			<Maze bind:squares={maze.squares} {mode} on:stepTaken={handleStepTaken} />
 		{:else}
 			<LoadingSpinner size="60" color="#FFFFFF" unit="px" duration="2s" />
 		{/if}
@@ -102,7 +93,7 @@
 	<div>
 		<button on:click={() => (mode = mode == 'play' ? 'edit' : 'play')}>{mode}</button>
 		{#if mode === 'edit' && maze}
-			<MazeConfigPanel mazeData={maze} size={maze.size}/>
+			<MazeConfigPanel mazeData={maze} size={maze.size} />
 		{/if}
 	</div>
 	{#if gameCompleted}

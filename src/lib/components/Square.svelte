@@ -1,4 +1,7 @@
 <script lang="ts">
+	import { findSquareByCondition } from "$lib";
+
+	export let mazeSquares: SquareData[][]
 	export let isStart: boolean;
 	export let isWall: boolean;
 	export let isOccupied: boolean;
@@ -14,9 +17,6 @@
 		}
 	}
 
-	function handleDoubleClick() {
-		console.log('double click');
-	}
 </script>
 
 <div
@@ -26,10 +26,10 @@
 		rounded-sm
         {isWall ? 'bg-black' : ''}
 		{isFinish ? 'bg-green-500' : ''}
+		{isStart ? 'bg-purple-600' : ''}
     "
 	tabindex="-1"
 	on:click={handleClick}
-	on:dblclick={handleDoubleClick}
 	on:keydown={(event) => {
 		if (event.key === 'Enter') {
 			handleClick();
@@ -81,7 +81,7 @@
 
 	.portal .player-indicator svg {
 		transition-property: opacity;
-		transition-duration: 0.5s;
+		transition-duration: 0.7s;
 		transition-timing-function: linear;
 	}
 </style>

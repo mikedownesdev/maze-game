@@ -103,6 +103,7 @@
 		<div class="flex space-x-0.5">
 			{#each rowValues as square}
 				<Square
+					bind:mazeSquares={squares}
 					bind:isStart={square.isStart}
 					bind:isOccupied={square.isOccupied}
 					bind:isWall={square.isWall}

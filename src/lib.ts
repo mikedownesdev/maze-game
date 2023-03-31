@@ -91,3 +91,16 @@ export const generateNewMaze = (): MazeData => {
         size: size
     }
 }
+
+export const findSquareByCondition = (squares: SquareData[][], condition: (square: SquareData) => boolean) => {
+    for (const [rowIndex, row] of squares.entries()) {
+        const colIndex = row.findIndex(condition);
+        if (colIndex !== -1) {
+            return { 
+                row: rowIndex, 
+                col: colIndex ,
+                square: squares[rowIndex][colIndex]
+            };
+        }
+    }
+};
