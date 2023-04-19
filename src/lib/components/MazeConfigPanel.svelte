@@ -1,42 +1,33 @@
 <script lang="ts">
-    import { submitNewMaze } from "../../firebase";
+    import { submitNewMaze, updateMaze } from "../../firebase";
+    import { mazeDataToMazeDocument } from "../../lib";
 
-    export let size: number;
     export let mazeData: MazeData;
-    $: numberOfWalls = mazeData.squares.reduce((totalWalls, row) => {
-		return (
-			totalWalls +
-			row.reduce((rowWalls, square) => {
-				return rowWalls + (square.isWall ? 1 : 0);
-			}, 0)
-		);
-	}, 0);
+    let mazeId = mazeData.id;
 
-    function handleClick() {
-        console.log("clicked")
+    function handleSaveIntention() {
+        // Convert mazeData to MazeDocument
+
+		let mazeDocument = mazeDataToMazeDocument(mazeData);
+
+        console.log("Attempting to save maze with id: ", mazeId)
+		// Save the maze to firebase
+		updateMaze(mazeDocument)
+			.then(() => console.log('save successful'))
+			.catch(error => console.log('save failed', error));
+    }
+
+    function handleMazeCreateIntention() {
         // convert MazeData to a MazeDocument
-        var newObject: {
-            [key: string]: SquareData[]
-        } = {}
-        mazeData.squares.forEach((row: SquareData[], index: number) => {
-            const indexString = index.toString();
-            newObject[indexString] = row;
-        })
-        const mazeDocument: MazeDocument = {
-            squares: newObject,
-            size: mazeData.size,
-        }
-        console.log(mazeDocument)
-        submitNewMaze(mazeDocument) //TODO change this to accept MazeData, instead of an incomplete mazeDocument
+        // let mazeDocument = mazeDataToMazeDocument(mazeData)
+
+        submitNewMaze(mazeData) //TODO change this to accept MazeData, instead of an incomplete mazeDocument
     }
 </script>
 
 <div class="bg-slate-200 rounded-md p-4">
     <div>
         <h3 class='text-lg py-2'>Settings</h3>
-        <label for="size">Size</label>
-        <input class="p-2" type="number" max="20" bind:value={size} />
-        <p>{numberOfWalls}</p>
     </div>
     <h3 class='text-lg py-2'>Validation Checks</h3>
     <div>
@@ -45,9 +36,16 @@
         <label for="hasFinishSquare">Finish Square</label>
         <input type="checkbox" id="hasFinishSquare" checked={true}/>
     </div>
-    <button class="bg-slate-500 text-white p-2 rounded-md" on:click={() => {
-        handleClick()
-    }}>Create as New</button>
+    
+    {#if mazeId }
+    <button class="bg-slate-500 text-white p-2 rounded-md" on:click={() => { handleSaveIntention() }}>
+        Save
+    </button>
+    {:else}
+    <button class="bg-slate-500 text-white p-2 rounded-md" on:click={() => { handleMazeCreateIntention() }}>
+        Create as New
+    </button>
+    {/if}
 </div>
 
 <style></style>

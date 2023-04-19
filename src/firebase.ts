@@ -2,6 +2,7 @@
 import { initializeApp } from "firebase/app";
 // import { getAnalytics } from "firebase/analytics";
 import { getFirestore, collection, getDocs, getDoc, doc, addDoc, DocumentSnapshot, updateDoc } from "firebase/firestore";
+import { mazeDataToMazeDocument } from "./lib";
 
 const firebaseConfig = {
     apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
@@ -49,9 +50,15 @@ export const getMaze = (id: string) => {
 
 }
 
-// add a
-export const submitNewMaze = (maze: MazeDocument): Promise<string> => {
-    return addDoc(mazesCollection, maze)
+export const submitNewMaze = (mazeData: MazeData): Promise<string> => {
+
+    const newMazeDocument = mazeDataToMazeDocument(mazeData);
+    const droppingId = {
+        squares: newMazeDocument.squares,
+        size: newMazeDocument.size
+    }
+
+    return addDoc(mazesCollection, droppingId)
         .then(docRef => {
             return docRef.id
         })

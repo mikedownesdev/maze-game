@@ -15,7 +15,7 @@ type SquareData = {
 }
 
 type MazeData = {
-    id: string;
+    id: string | undefined;
     squares: SquareData[][];
     size: number;
 }

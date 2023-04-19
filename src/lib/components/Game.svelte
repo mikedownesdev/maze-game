@@ -22,26 +22,7 @@
 		// You can define the logic to generate a new maze here
 	};
 
-	const saveMaze = (maze: MazeData) => {
-		// Convert mazeData to MazeDocument
 
-		var squaresObject: {
-			[key: string]: SquareData[];
-		} = {};
-		for (let rowIndex = 0; rowIndex < maze.squares.length; rowIndex++) {
-			squaresObject[rowIndex.toString()] = maze.squares[rowIndex]
-		}
-		
-		const mazeDocument: MazeDocument = {
-			...maze,
-			squares: squaresObject
-		};
-
-		// Save the maze to firebase
-		updateMaze(mazeDocument)
-			.then(() => console.log('save successful'))
-			.catch(error => console.log('save failed', error));
-	};
 
 	
 
@@ -123,12 +104,9 @@
 	<div>
 		<button on:click={() => (mode = mode == 'play' ? 'edit' : 'play')}>{mode}</button>
 		{#if mode === 'edit' && maze}
-			<MazeConfigPanel mazeData={maze} size={maze.size} />
+			<MazeConfigPanel mazeData={maze} />
 		{/if}
 	</div>
-	<button class="bg-slate-500 text-white p-2 rounded-md" on:click={() => {
-        if (maze) { saveMaze(maze) }
-    }}>Save</button>
 	{#if gameCompleted}
 		<div transition:fade class="complete-popup shadow-xl fixed rounded-3xl">
 			<h2>Complete!</h2>
