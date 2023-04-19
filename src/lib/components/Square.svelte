@@ -12,7 +12,7 @@
 	export let portalNumber: number | null | undefined;
 	export let row: number;
 	export let col: number;
-	export let nextPortalNumber: () => number | null;
+	export let nextPortalNumber: number;
 
 	let squareEl: HTMLElement;
 
@@ -44,7 +44,7 @@
 		} else if (event.detail === 2) {
 			isWall = false;
 			isPortal = true
-			portalNumber = nextPortalNumber();
+			portalNumber = nextPortalNumber;
 		}
 		
 		dispatch('updateSquare',  {

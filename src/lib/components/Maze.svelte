@@ -1,6 +1,7 @@
 <script lang="ts">
 	import Square from './Square.svelte';
 	import { createEventDispatcher } from 'svelte';
+	import StepCounter from './StepCounter.svelte';
 
 	const dispatch = createEventDispatcher();
 
@@ -10,27 +11,44 @@
 
 	let currentlyOccupiedSquare = { row: 0, col: 0 };
 
-	let activePortalNumbers = new Set<number>();
-	squares.forEach((row) => {
-		row.forEach((square) => {
-			if (square.isPortal && square.portalNumber) {
-				activePortalNumbers.add(square.portalNumber);
-			}
+	const stupidLittleFunction = (squares: SquareData[][]) => {
+		const newSet = new Set<number>();
+		squares.forEach((row) => {
+			row.forEach((square) => {
+				if (square.isPortal && square.portalNumber) {
+					newSet.add(square.portalNumber);
+				}
+			});
 		});
-	});
+		return newSet;
+	}
+
+	$: activePortalNumbers = stupidLittleFunction(squares);
+
+
+	// let activePortalNumbers = new Set<number>();
+	// squares.forEach((row) => {
+	// 	row.forEach((square) => {
+	// 		if (square.isPortal && square.portalNumber) {
+	// 			activePortalNumbers.add(square.portalNumber);
+	// 		}
+	// 	});
+	// });
 
 	$: portalNumbersSorted = Array.from(activePortalNumbers).sort((a, b) => a - b);
+	$: nextPortalNumber = getNextPortalNumber(activePortalNumbers);
 
-	const getNextPortalNumber: () => number | null = () => {
+	const getNextPortalNumber: (portalNumbers: Set<number>) => number | null = (portalNumbers: Set<number>) => {
+		console.log(portalNumbers)
 		for (let i = 1; i <= 9; i++) {
-			if (!activePortalNumbers.has(i)) {
+			if (!portalNumbers.has(i)) {
 				return i;
 			}
 		}
 		return null;
 	};
 
-	let nextPortalNumber = getNextPortalNumber();
+	// let nextPortalNumber = getNextPortalNumber();
 
 	function updateSquare(event: CustomEvent) {
 		const { row, col, isWall, isPortal, isStart, isFinish, portalNumber } = event.detail.current;
@@ -50,7 +68,7 @@
 			activePortalNumbers = new Set(activePortalNumbers);
 		}
 
-		nextPortalNumber = getNextPortalNumber();
+		// nextPortalNumber = getNextPortalNumber();
 
 		// Clone the `squares` array to trigger a reactivity update
 		const updatedSquares = squares.map((rowValues, r) =>
@@ -166,7 +184,7 @@
 					col={colIndex}
 					isEditMode={mode === 'edit'}
 					isPortal={square.isPortal}
-					nextPortalNumber={getNextPortalNumber}
+					nextPortalNumber={nextPortalNumber}
 					on:updateSquare={updateSquare}
 				/>
 			{/each}

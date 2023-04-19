@@ -7,7 +7,7 @@
 	import MazeConfigPanel from './MazeConfigPanel.svelte';
 	import { Square as LoadingSpinner } from 'svelte-loading-spinners';
 	import { fade } from 'svelte/transition';
-	import { getMaze, updateMaze } from '../../firebase';
+	import { getMaze } from '../../firebase';
 	import { createNewMaze, findSquareByCondition } from '../../lib';
 
 	let mode: 'play' | 'edit' = 'play';
@@ -21,10 +21,6 @@
 	const nextMaze = () => {
 		// You can define the logic to generate a new maze here
 	};
-
-
-
-	
 
 	const initializeMaze = (maze: MazeData) => {
 		const startSquare = findSquareByCondition(maze.squares, (square) => square.isStart);
@@ -96,7 +92,7 @@
 	</div>
 	<div>
 		{#if maze && mazeLoaded}
-			<Maze bind:squares={maze.squares} {mode} on:stepTaken={handleStepTaken} />
+			<Maze squares={maze.squares} {mode} on:stepTaken={handleStepTaken} />
 		{:else}
 			<LoadingSpinner size="60" color="#FFFFFF" unit="px" duration="2s" />
 		{/if}
