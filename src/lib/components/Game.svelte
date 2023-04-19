@@ -8,7 +8,7 @@
 	import { Square as LoadingSpinner } from 'svelte-loading-spinners';
 	import { fade } from 'svelte/transition';
 	import { getMaze, updateMaze } from '../../firebase';
-	import { generateNewMaze, findSquareByCondition } from '../../lib';
+	import { createNewMaze, findSquareByCondition } from '../../lib';
 	import { error } from '@sveltejs/kit';
 
 	let mode: 'play' | 'edit' = 'play';
@@ -53,14 +53,13 @@
 		const finishSquare = findSquareByCondition(maze.squares, (square) => square.isFinish);
 		if (startSquare && finishSquare) {
 			maze.squares[startSquare.row][startSquare.col].isOccupied = true;
-			maze.squares[finishSquare.row][finishSquare.col].isFinish = true;
 		} else {
 			console.log('No start or finish square found');
 		}
 	};
 
 	const loadNewMaze = () => {
-		maze = generateNewMaze();
+		maze = createNewMaze();
 		mazeLoaded = true;
 		mode = 'edit';
 		initializeMaze(maze);
