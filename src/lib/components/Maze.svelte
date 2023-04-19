@@ -8,21 +8,18 @@
 	export let squares: SquareData[][];
 	export let mode: 'play' | 'edit';
 
-	$: isValid = true;
-
 	let currentlyOccupiedSquare = { row: 0, col: 0 };
-	$: numberOfWalls = squares.reduce((acc, row) => {
-		return (
-			acc +
-			row.reduce((acc, square) => {
-				return acc + (square.isWall ? 1 : 0);
-			}, 0)
-		);
-	}, 0);
 
 	let activePortalNumbers = new Set<number>();
+	squares.forEach((row) => {
+		row.forEach((square) => {
+			if (square.isPortal && square.portalNumber) {
+				activePortalNumbers.add(square.portalNumber);
+			}
+		});
+	});
 
-	$: activePortalNumbersString = Array.from(activePortalNumbers).join(', ');
+	$: portalNumbersSorted = Array.from(activePortalNumbers).sort((a, b) => a - b);
 
 	const getNextPortalNumber: () => number | null = () => {
 		for (let i = 1; i <= 9; i++) {
@@ -154,10 +151,11 @@
 	}
 </script>
 
-<p>Number of walls: {numberOfWalls}</p>
-<p>Active portal numbers: {activePortalNumbersString}</p>
-<p>Next Portal Number: {nextPortalNumber}</p>
-
+<div class="portal-info-pane flex justify-center mb-4 gap-2">
+	{#each portalNumbersSorted as portalNumber}
+		<p class='p-2 rounded-lg bg-purple-500 text-white'>{portalNumber}</p>
+	{/each}
+</div>
 <div class="flex flex-col items-center space-y-0.5">
 	{#each squares as rowValues, rowIndex}
 		<div class="flex space-x-0.5">

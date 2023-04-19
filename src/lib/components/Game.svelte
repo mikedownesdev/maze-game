@@ -9,7 +9,6 @@
 	import { fade } from 'svelte/transition';
 	import { getMaze, updateMaze } from '../../firebase';
 	import { createNewMaze, findSquareByCondition } from '../../lib';
-	import { error } from '@sveltejs/kit';
 
 	let mode: 'play' | 'edit' = 'play';
 	let time = 0;
@@ -37,8 +36,6 @@
 			...maze,
 			squares: squaresObject
 		};
-
-		console.log(mazeDocument)
 
 		// Save the maze to firebase
 		updateMaze(mazeDocument)
