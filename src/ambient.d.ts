@@ -1,9 +1,17 @@
+type SquareIndices = {
+    row: number;
+    col: number;
+}
+
 type SquareData = {
     isWall: boolean;
     isOccupied: boolean;
     isStart: boolean;
     isFinish: boolean;
-    portalNumber: number | null | undefined;
+    isPortal: boolean;
+    portalNumber: number | null;
+    row: number;
+    col: number;
 }
 
 type MazeData = {

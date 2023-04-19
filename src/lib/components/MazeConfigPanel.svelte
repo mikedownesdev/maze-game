@@ -27,7 +27,7 @@
             size: mazeData.size,
         }
         console.log(mazeDocument)
-        submitNewMaze(mazeDocument)
+        submitNewMaze(mazeDocument) //TODO change this to accept MazeData, instead of an incomplete mazeDocument
     }
 </script>
 
@@ -47,7 +47,7 @@
     </div>
     <button class="bg-slate-500 text-white p-2 rounded-md" on:click={() => {
         handleClick()
-    }}>Save</button>
+    }}>Create as New</button>
 </div>
 
 <style></style>

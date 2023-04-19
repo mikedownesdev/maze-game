@@ -7,21 +7,75 @@
 	// Props
 	export let squares: SquareData[][];
 	export let mode: 'play' | 'edit';
-	$: numberOfWalls = squares.reduce((totalWalls, row) => {
+
+	$: isValid = true;
+
+	let currentlyOccupiedSquare = { row: 0, col: 0 };
+	$: numberOfWalls = squares.reduce((acc, row) => {
 		return (
-			totalWalls +
-			row.reduce((rowWalls, square) => {
-				return rowWalls + (square.isWall ? 1 : 0);
+			acc +
+			row.reduce((acc, square) => {
+				return acc + (square.isWall ? 1 : 0);
 			}, 0)
 		);
 	}, 0);
 
-	let currentlyOccupiedSquare = { row: 0, col: 0 };
+	let activePortalNumbers = new Set<number>();
 
-	function updatePlayerPosition(
-		{ row, col }: { row: number; col: number },
-		usePortal: boolean = true
-	) {
+	$: activePortalNumbersString = Array.from(activePortalNumbers).join(', ');
+
+	const getNextPortalNumber: () => number | null = () => {
+		for (let i = 1; i <= 9; i++) {
+			if (!activePortalNumbers.has(i)) {
+				return i;
+			}
+		}
+		return null;
+	};
+
+	let nextPortalNumber = getNextPortalNumber();
+
+	function updateSquare(event: CustomEvent) {
+		const { row, col, isWall, isPortal, isStart, isFinish, portalNumber } = event.detail.current;
+		const previous = event.detail.previous;
+		const square = squares[row][col];
+
+		console.log('isPortal:', isPortal);
+		console.log('portalNumber:', portalNumber);
+
+		if (isPortal && portalNumber) {
+			console.log('adding', portalNumber);
+			activePortalNumbers.add(portalNumber);
+			activePortalNumbers = new Set(activePortalNumbers);
+		} else if (!isPortal && previous.portalNumber) {
+			console.log('removing', square.portalNumber);
+			activePortalNumbers.delete(previous.portalNumber);
+			activePortalNumbers = new Set(activePortalNumbers);
+		}
+
+		nextPortalNumber = getNextPortalNumber();
+
+		// Clone the `squares` array to trigger a reactivity update
+		const updatedSquares = squares.map((rowValues, r) =>
+			rowValues.map((square, c) => {
+				if (r === row && c === col) {
+					return {
+						...square,
+						isWall,
+						isPortal,
+						isStart,
+						isFinish,
+						portalNumber
+					};
+				}
+				return square;
+			})
+		);
+
+		squares = updatedSquares;
+	}
+
+	function updatePlayerPosition({ row, col }: SquareIndices, usePortal: boolean = true) {
 		const nextSquare = squares[row][col];
 
 		if (nextSquare.isWall) return;
@@ -52,10 +106,14 @@
 
 	// Handle keyboard input to move the player
 	function handleKeyDown(event: KeyboardEvent) {
-		var nextSquareIndicies: {
-			row: number;
-			col: number;
-		} = { row: 0, col: 0 };
+		if (event.key.includes('Arrow')) {
+			event.preventDefault();
+		}
+		if (mode !== 'play') {
+			return;
+		}
+
+		var nextSquareIndicies: SquareIndices = { row: 0, col: 0 };
 
 		switch (event.key) {
 			case 'ArrowUp':
@@ -97,24 +155,42 @@
 </script>
 
 <p>Number of walls: {numberOfWalls}</p>
+<p>Active portal numbers: {activePortalNumbersString}</p>
+<p>Next Portal Number: {nextPortalNumber}</p>
 
 <div class="flex flex-col items-center space-y-0.5">
-	{#each squares as rowValues}
+	{#each squares as rowValues, rowIndex}
 		<div class="flex space-x-0.5">
-			{#each rowValues as square}
+			{#each rowValues as square, colIndex}
 				<Square
-					bind:mazeSquares={squares}
-					bind:isStart={square.isStart}
-					bind:isOccupied={square.isOccupied}
-					bind:isWall={square.isWall}
-					bind:isFinish={square.isFinish}
-					isPortal={square.portalNumber ? true : false}
-					bind:number={square.portalNumber}
-					{mode}
+					{...square}
+					row={rowIndex}
+					col={colIndex}
+					isEditMode={mode === 'edit'}
+					isPortal={square.isPortal}
+					nextPortalNumber={getNextPortalNumber}
+					on:updateSquare={updateSquare}
 				/>
 			{/each}
 		</div>
 	{/each}
 </div>
 
+<!-- Add this below the maze rendering code in Maze.svelte -->
+{#if mode === 'edit'}
+	{#each Array.from({ length: 9 }, (_, i) => i + 1) as num}
+		{#if !activePortalNumbers.has(num)}
+			<p class="text-red-600 mt-2">
+				Warning: Portal {num} is missing. The maze is currently invalid.
+			</p>
+		{/if}
+	{/each}
+{/if}
+
 <svelte:window on:keydown={handleKeyDown} />
+
+<style>
+	.context-menu {
+		min-width: 10rem;
+	}
+</style>

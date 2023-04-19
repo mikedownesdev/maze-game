@@ -7,8 +7,9 @@
 	import MazeConfigPanel from './MazeConfigPanel.svelte';
 	import { Square as LoadingSpinner } from 'svelte-loading-spinners';
 	import { fade } from 'svelte/transition';
-	import { getMaze } from '../../firebase';
+	import { getMaze, updateMaze } from '../../firebase';
 	import { generateNewMaze, findSquareByCondition } from '../../lib';
+	import { error } from '@sveltejs/kit';
 
 	let mode: 'play' | 'edit' = 'play';
 	let time = 0;
@@ -20,6 +21,29 @@
 
 	const nextMaze = () => {
 		// You can define the logic to generate a new maze here
+	};
+
+	const saveMaze = (maze: MazeData) => {
+		// Convert mazeData to MazeDocument
+
+		var squaresObject: {
+			[key: string]: SquareData[];
+		} = {};
+		for (let rowIndex = 0; rowIndex < maze.squares.length; rowIndex++) {
+			squaresObject[rowIndex.toString()] = maze.squares[rowIndex]
+		}
+		
+		const mazeDocument: MazeDocument = {
+			...maze,
+			squares: squaresObject
+		};
+
+		console.log(mazeDocument)
+
+		// Save the maze to firebase
+		updateMaze(mazeDocument)
+			.then(() => console.log('save successful'))
+			.catch(error => console.log('save failed', error));
 	};
 
 	
@@ -46,7 +70,17 @@
 		const mazePromise = getMaze('GjgdlIxwA8lG0rF92Ya8');
 		mazePromise.then((mazeDocument) => {
 			if (mazeDocument) {
+				console.log(mazeDocument)
 				maze = { ...mazeDocument, squares: Object.values(mazeDocument.squares) };
+				maze.squares.forEach(row => {
+					row.forEach(square => {
+						if (square.portalNumber) {
+							square.isPortal = true;
+						} else {
+							square.isPortal = false;
+						}
+					})
+				})
 				mazeLoaded = true;
 				mode = 'play';
 
@@ -96,6 +130,9 @@
 			<MazeConfigPanel mazeData={maze} size={maze.size} />
 		{/if}
 	</div>
+	<button class="bg-slate-500 text-white p-2 rounded-md" on:click={() => {
+        if (maze) { saveMaze(maze) }
+    }}>Save</button>
 	{#if gameCompleted}
 		<div transition:fade class="complete-popup shadow-xl fixed rounded-3xl">
 			<h2>Complete!</h2>

@@ -1,7 +1,7 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
 // import { getAnalytics } from "firebase/analytics";
-import { getFirestore, collection, getDocs, getDoc, doc, addDoc, DocumentSnapshot } from "firebase/firestore";
+import { getFirestore, collection, getDocs, getDoc, doc, addDoc, DocumentSnapshot, updateDoc } from "firebase/firestore";
 
 const firebaseConfig = {
     apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
@@ -60,4 +60,9 @@ export const submitNewMaze = (maze: MazeDocument): Promise<string> => {
             return ""
         })
 
+}
+
+export const updateMaze = (maze: MazeDocument): Promise<void> => {
+    const docRef = doc(db, "mazes", maze.id);
+    return updateDoc(docRef, maze)
 }
